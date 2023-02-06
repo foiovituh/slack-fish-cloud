@@ -1,0 +1,38 @@
+{
+  "blocks": [
+    {
+      "type": "header",
+      "text": {
+        "type": "plain_text",
+        "text": "EC2 | today's resources"
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "Region: `<region>`\n\nRunning Instances:\n\n```<properties>```"
+      }
+    },
+    {
+      "type": "actions",
+      "elements": [
+        {
+          "type": "button",
+          "style": "primary",
+          "text": {
+            "type": "plain_text",
+            "text": "Dashboard"
+          },
+          "url": "https://<region>.console.aws.amazon.com/ec2/home?region=<region>#Home:"
+        }
+      ]
+    },
+    {
+      "type": "divider"
+    }
+  ]
+}
