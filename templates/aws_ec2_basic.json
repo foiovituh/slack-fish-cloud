@@ -14,7 +14,7 @@
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": "Region: `<region>`\n\nRunning Instances:\n\n```<properties>```"
+        "text": "Region: `<region>`\n\nRunning <resource>:\n\n```<properties>```"
       }
     },
     {

@@ -4,7 +4,7 @@ break_line() {
 }
 
 alert() {
-  echo -e $1;
+  echo -e "${1}";
   exit;
 }
 

@@ -30,8 +30,6 @@ In Slack:
 
 ![example_aws_ec2_custom_regions_slack](https://user-images.githubusercontent.com/68431603/216840788-ba201464-4322-4218-aa5e-5a1d53bb0aba.png)
 
-<b>OBS*</b>: if you don't specify any region, the default region set during `install.sh` will be used.
-
 ## Open plans 📌
 - New filters
 - Set up schedulers with crontab

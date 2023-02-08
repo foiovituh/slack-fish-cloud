@@ -6,19 +6,17 @@ source "${EXECUTION_PATH}/utils.sh";
 declare -a DEPENDENCIES=$(cat "${EXECUTION_PATH}/dependencies.txt");
 
 read -p "-> CLI profile name: " AWS_PROFILE;
-read -p "-> AWS default region (optional): " AWS_REGION;
 read -p "-> Slack webhook url for your workspace: " WEB_HOOK_URL;
 
 set_credential_constants() {
   sed -e "s,${1}=\"\",${1}=\"${2}\"," -i "${EXECUTION_PATH}/credentials.sh";
 }
 
-set_credential_constants "AWS_PROFILE" $AWS_PROFILE;
-set_credential_constants "AWS_REGION" $AWS_REGION;
-set_credential_constants "WEB_HOOK_URL" $WEB_HOOK_URL;
+set_credential_constants "AWS_PROFILE" ${AWS_PROFILE};
+set_credential_constants "WEB_HOOK_URL" ${WEB_HOOK_URL};
 
 for dependencie in ${DEPENDENCIES[@]}; do
-  if [[ ! -x $(command -v $dependencie) ]]; then
+  if [[ ! -x $(command -v ${dependencie}) ]]; then
     echo -e "\n-> Installing ${dependencie}...";
     if [[ $dependencie == "aws" ]]; then
         curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" \
