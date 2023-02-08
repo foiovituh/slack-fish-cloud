@@ -22,13 +22,13 @@ Never forget to delete your AWS daily tests. SlackFishCloud sends messages to Sl
 For more information about Slack Webhooks, see <a href="https://api.slack.com/messaging/webhooks" target="_blank">Sending messages using Incoming Webhooks</a>
 
 ## Quick usage guide 📚
-Get EC2 running instances (not launched via ASGs) using custom regions:
+Get EC2 running instances (not launched via ASGs) and running ASGs:
 
-![example_aws_ec2_custom_regions](https://user-images.githubusercontent.com/68431603/216840855-5ffde476-40d6-4f33-be98-fce423d75a8f.png)
+![example_aws_ec2_instances_and_asgs_console](https://user-images.githubusercontent.com/68431603/217516534-ec076fb0-ccaa-4996-93b6-359757281d54.png)
 
 In Slack:
 
-![example_aws_ec2_custom_regions_slack](https://user-images.githubusercontent.com/68431603/216840788-ba201464-4322-4218-aa5e-5a1d53bb0aba.png)
+![example_aws_ec2_instances_and_asgs_slack](https://user-images.githubusercontent.com/68431603/217516776-37da8d49-14c7-4398-aa41-d7c665d8f685.png)
 
 ## Open plans 📌
 - New filters
