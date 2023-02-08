@@ -40,12 +40,13 @@ exit_if_aws_region_was_not_found() {
 #   region
 #   any ec2 properties content
 #   any ec2 resource name
+#   any ec2 console hashtag to redirect
 ###############################################################################
 call_main_step_functions_if_has_running_resources_in_current_region() {
   if [[ -z "${2}" ]] || [[ "${2}" == "[]" ]]; then
     echo -e "-> The ${1} region had no running ${3}...\n";
   else
-    call_functions_of_the_main_steps "${1}" "${3}" "${2}";
+    call_functions_of_the_main_steps "${1}" "${3}" "${2}" "${4}";
   fi
 }
 
@@ -104,6 +105,7 @@ get_ec2_instance_properties() {
 #   region
 #   resouce name
 #   "ec2_instance_properties" or "ec2_asg_properties" content
+#   any ec2 console hashtag to redirect
 # Globals:
 #   message_body
 #   WEB_HOOK_BLOCK_MAX_LENGTH
@@ -112,7 +114,7 @@ insert_ec2_properties_in_message_body() {
   echo "-> Inserting EC2 response in the message body...";
 
   message_body=$(echo "${message_body}" | \
-    sed "s/<region>/${1}/g ; s/<resource>/${2}/ ; s/<properties>/${3}/");
+    sed "s/<region>/${1}/g ; s/<type>/${2}/ ; s/<data>/${3}/ ; s/<#>/${4}/");
 
   if [[ "${#message_body}" -ge "${WEB_HOOK_BLOCK_MAX_LENGTH}" ]]; then
     alert "-> Too many resources for Webhook Block max length!";
@@ -144,11 +146,13 @@ send_ec2_properties_to_channel_for_each_region_specified() {
     for region in $ARGUMENTS; do
       get_ec2_auto_scaling_group_properties "${region}";
       call_main_step_functions_if_has_running_resources_in_current_region \
-      "${region}" "${ec2_asg_properties}" "auto scaling groups";
+      "${region}" "${ec2_asg_properties}" "auto scaling groups" \
+      "#AutoScalingGroups:";
 
       get_ec2_instance_properties "$region";
       call_main_step_functions_if_has_running_resources_in_current_region \
-      "${region}" "${ec2_instance_properties}" "instances";
+      "${region}" "${ec2_instance_properties}" "instances" \
+      "#Instances:instanceState=running;sort=tag:Name";
     done
   else
     alert "-> You must specify one or more regions, for example:\n-> \
@@ -172,7 +176,7 @@ refresh_message_body_template() {
 ###############################################################################
 call_functions_of_the_main_steps() {
   refresh_message_body_template;
-  insert_ec2_properties_in_message_body "${1}" "${2}" "${3}";
+  insert_ec2_properties_in_message_body "${1}" "${2}" "${3}" "${4}";
   send_message_to_channel;
 }
 

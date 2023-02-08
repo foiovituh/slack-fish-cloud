@@ -14,7 +14,7 @@
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": "Region: `<region>`\n\nRunning <resource>:\n\n```<properties>```"
+        "text": "Region: `<region>`\n\nRunning <type>:\n\n```<data>```"
       }
     },
     {
@@ -27,7 +27,7 @@
             "type": "plain_text",
             "text": "Dashboard"
           },
-          "url": "https://<region>.console.aws.amazon.com/ec2/home?region=<region>#Home:"
+          "url": "https://<region>.console.aws.amazon.com/ec2/home?region=<region><#>:"
         }
       ]
     },
