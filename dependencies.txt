@@ -1,3 +1,4 @@
 jq
 figlet
+dos2unix
 aws

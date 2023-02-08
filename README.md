@@ -13,11 +13,10 @@ Never forget to delete your AWS daily tests. SlackFishCloud sends messages to Sl
 
 ## Install ⚙️
 <b>Steps:</b>
-1. `chmod +x install.sh slack_fish_cloud.sh`
-2. Run `./install.sh`
-3. Set default AWS CLI profile and a Slack Webhook URL for your workspaces
-4. If there are no error messages, all dependencies were installed successfully
-5. (Only for WSL): ```sudo apt install dos2unix``` and them ```dos2unix dependencies.txt install.sh utils.sh credentials.sh slack_fish_cloud.sh```
+1. ```sudo apt install dos2unix```
+2. In SlackFishCloud directory: ```dos2unix sh/* && dos2unix dependencies.txt install.sh slack_fish_cloud.sh```
+3. `chmod +x install.sh slack_fish_cloud.sh`
+4. Run `./install.sh` and set default AWS CLI profile and a Slack Webhook URL for your workspaces
   
 For more information about Slack Webhooks, see <a href="https://api.slack.com/messaging/webhooks" target="_blank">Sending messages using Incoming Webhooks</a>
 

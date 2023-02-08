@@ -1,22 +1,29 @@
 #/bin/bash
 readonly EXECUTION_PATH=$(dirname "$0");
 
-source "${EXECUTION_PATH}/utils.sh";
+source "${EXECUTION_PATH}/sh/utils.sh";
 
 declare -a DEPENDENCIES=$(cat "${EXECUTION_PATH}/dependencies.txt");
 
 read -p "-> CLI profile name: " AWS_PROFILE;
 read -p "-> Slack webhook url for your workspace: " WEB_HOOK_URL;
 
+###############################################################################
+# Arguments:
+#   constant name
+#   new content to insert in constant
+# Globals:
+#  EXECUTION_PATH
+###############################################################################
 set_credential_constants() {
-  sed -e "s,${1}=\"\",${1}=\"${2}\"," -i "${EXECUTION_PATH}/credentials.sh";
+  sed -e "s,${1}=\"\",${1}=\"${2}\"," -i "${EXECUTION_PATH}/sh/credentials.sh";
 }
 
-set_credential_constants "AWS_PROFILE" ${AWS_PROFILE};
-set_credential_constants "WEB_HOOK_URL" ${WEB_HOOK_URL};
+set_credential_constants "AWS_PROFILE" "${AWS_PROFILE}";
+set_credential_constants "WEB_HOOK_URL" "${WEB_HOOK_URL}";
 
 for dependencie in ${DEPENDENCIES[@]}; do
-  if [[ ! -x $(command -v ${dependencie}) ]]; then
+  if [[ ! -x $(command -v "${dependencie}") ]]; then
     echo -e "\n-> Installing ${dependencie}...";
     if [[ $dependencie == "aws" ]]; then
         curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" \
@@ -30,7 +37,7 @@ for dependencie in ${DEPENDENCIES[@]}; do
         break_line;
     fi
 
-    sudo apt install "$dependencie";
+    sudo apt install "${dependencie}";
   fi
 done
 

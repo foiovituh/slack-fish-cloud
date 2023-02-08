@@ -2,9 +2,9 @@
 readonly EXECUTION_PATH=$(dirname "$0");
 readonly CURRENT_DATE=$(date +"%Y-%m-%d");
 
-source "${EXECUTION_PATH}/utils.sh";
-source "${EXECUTION_PATH}/jq_queries.sh";
-source "${EXECUTION_PATH}/credentials.sh";
+source "${EXECUTION_PATH}/sh/utils.sh";
+source "${EXECUTION_PATH}/sh/jq_queries.sh";
+source "${EXECUTION_PATH}/sh/credentials.sh";
 
 declare -a ARGUMENTS="${@:2}";
 declare -i WEB_HOOK_BLOCK_MAX_LENGTH=3001;
