@@ -12,6 +12,7 @@ declare -i AWS_REGION_NOT_FOUND_STATUS_CODE=255;
 
 message_body="";
 ec2_asg_properties="";
+ec2_volume_properties="";
 ec2_instance_properties="";
 
 ###############################################################################
@@ -72,6 +73,31 @@ get_ec2_auto_scaling_group_properties() {
 
   ec2_asg_properties=$(echo "${ec2_asg_properties}" | \
     jq -r "${EC2_ASG_PROPERTIES_JQ_QUERY}");
+}
+
+###############################################################################
+# Arguments:
+#   region
+# Globals:
+#   AWS_PROFILE
+#   CURRENT_DATE
+#   AWS_REGION_NOT_FOUND_STATUS_CODE
+#   ec2_volume_properties
+###############################################################################
+get_ec2_volume_properties() {
+  echo "-> Getting EC2 volumes properties in ${1}...";
+  ec2_volume_properties=$(aws ec2 describe-volumes \
+    --region "${1}" \
+    --profile "${AWS_PROFILE}" \
+    --output "json" \
+    --filters 'Name=create-time,Values='${CURRENT_DATE}'T*' \
+    --query 'Volumes[?State!=`deleted`]
+    .{id:VolumeId,type:VolumeType,size:Size}');
+
+  exit_if_aws_region_was_not_found "$(echo $?)";
+
+  ec2_volume_properties=$(echo "${ec2_volume_properties}" | \
+    jq -r "${EC2_VOLUME_PROPERTIES_JQ_QUERY}");
 }
 
 ###############################################################################
@@ -148,6 +174,10 @@ send_ec2_properties_to_channel_for_each_region_specified() {
       call_main_step_functions_if_has_running_resources_in_current_region \
       "${region}" "${ec2_asg_properties}" "auto scaling groups" \
       "#AutoScalingGroups:";
+
+      get_ec2_volume_properties "$region";
+      call_main_step_functions_if_has_running_resources_in_current_region \
+      "${region}" "${ec2_volume_properties}" "volumes" "#Volumes:";
 
       get_ec2_instance_properties "$region";
       call_main_step_functions_if_has_running_resources_in_current_region \
