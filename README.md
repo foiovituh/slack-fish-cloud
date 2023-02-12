@@ -1,6 +1,5 @@
 # SlackFishCloud 🐠
-
-Never forget to delete your AWS daily tests. SlackFishCloud sends messages to Slack channels alerting you to running AWS resources. 💬
+Never forget to delete your AWS daily tests. SlackFishCloud sends messages to Slack channels alerting you to running AWS resources.
 
 ## Dependencies 🔗
 <b>OS</b>:
@@ -9,7 +8,7 @@ Never forget to delete your AWS daily tests. SlackFishCloud sends messages to Sl
 <b>Will be installed via `install.sh` if necessary:</b>
 - jq
 - figlet
-- AWS CLI v.2+ (requires configuration)
+- AWS CLI v.2+ (<b>requires configuration</b>)
 
 ## Install ⚙️
 <b>Steps:</b>
@@ -19,12 +18,17 @@ Never forget to delete your AWS daily tests. SlackFishCloud sends messages to Sl
 For more information about Slack Webhooks, see <a href="https://api.slack.com/messaging/webhooks" target="_blank">Sending messages using Incoming Webhooks</a>
 
 ## Quick usage guide 📚
-Get EC2 running instances (not launched via ASGs) and running ASGs:
+Get EC2 running resources (ASGs, volumes and instances) in `us-east-1`:
+```bash
+./sfc.sh --regions us-east-1
+```
 
-![example_aws_ec2_instances_and_asgs_console](https://user-images.githubusercontent.com/68431603/217516534-ec076fb0-ccaa-4996-93b6-359757281d54.png)
+You can also pass other regions separated by spaces:
+```bash
+./sfc.sh --regions us-east-1 us-east-2 af-south-1 eu-west-3
+```
 
-In Slack:
-
+Example in Slack:
 ![example_aws_ec2_instances_and_asgs_slack](https://user-images.githubusercontent.com/68431603/217516776-37da8d49-14c7-4398-aa41-d7c665d8f685.png)
 ![example_aws_ec2_volumes_slack](https://user-images.githubusercontent.com/68431603/218195248-b26899d1-cd2c-4471-a9b5-d972ae6f7b6a.png)
 
@@ -35,7 +39,7 @@ In Slack:
 - Set up schedulers with crontab
 - Project more EC2 attributes in messages
 - Implement a multi-cloud version (Azure + GCP)
-- Add support in other AWS services/resources, e.g. ASGs, Snapshots, EBS disks, S3 buckets
+- Add support in other AWS services/resources, e.g. Snapshots and S3 buckets
 
 ## Do you want help me? 👥
 If you have any ideas or wish to contribute to the project, contact me on Twitter @vituohto or send me a pull request! :)
