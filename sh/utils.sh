@@ -1,6 +1,6 @@
 #!/bin/bash
 break_line() {
-  echo;
+  printf "\n";
 }
 
 ###############################################################################
@@ -8,13 +8,12 @@ break_line() {
 #   message
 ###############################################################################
 alert() {
-  echo -e "${1}";
+  printf "%s\n" "$1";
   exit;
 }
 
 show_banner() {
   figlet "SlackFishCloud" -f "big";
-  echo "* Never forget to delete your daily AWS test resources";
-  echo -e "* GitHub: https://www.github.com/foiovituh/SlackFishCloud\n";
+  printf "%s\n" "* Never forget to delete your daily AWS test resources";
+  printf "%s\n\n" "* GH -> https://www.github.com/foiovituh/slack-fish-cloud";
 }
-

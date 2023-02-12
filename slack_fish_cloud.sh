@@ -1,6 +1,6 @@
-#/bin/bash
-readonly EXECUTION_PATH=$(dirname "$0");
-readonly CURRENT_DATE=$(date +"%Y-%m-%d");
+#!/bin/bash
+readonly EXECUTION_PATH="$(dirname "$0")";
+readonly CURRENT_DATE="$(date +"%Y-%m-%d")";
 
 source "${EXECUTION_PATH}/sh/utils.sh";
 source "${EXECUTION_PATH}/sh/jq_queries.sh";
@@ -21,7 +21,7 @@ ec2_instance_properties="";
 #  WEB_HOOK_URL
 ###############################################################################
 checks_for_required_constants() {
-  if [[ -z "${AWS_PROFILE}" || -z "${WEB_HOOK_URL}" ]]; then
+  if [[ -z "$AWS_PROFILE" || -z "$WEB_HOOK_URL" ]]; then
     alert "-> You must define the required constants, run install.sh";
   fi
 }
@@ -31,7 +31,7 @@ checks_for_required_constants() {
 #  AWS_REGION_NOT_FOUND_STATUS_CODE
 ###############################################################################
 exit_if_aws_region_was_not_found() {
-  if [[ "${1}" -eq "${AWS_REGION_NOT_FOUND_STATUS_CODE}" ]]; then
+  if [[ "$1" -eq "$AWS_REGION_NOT_FOUND_STATUS_CODE" ]]; then
     exit;
   fi
 }
@@ -44,10 +44,10 @@ exit_if_aws_region_was_not_found() {
 #   any ec2 console hashtag to redirect
 ###############################################################################
 call_main_step_functions_if_has_running_resources_in_current_region() {
-  if [[ -z "${2}" ]] || [[ "${2}" == "[]" ]]; then
-    echo -e "-> The ${1} region had no running ${3}...\n";
+  if [[ -z "$2" ]] || [[ "$2" == "[]" ]]; then
+    printf "%s\n\n" "-> The ${1} region had no running ${3}...";
   else
-    call_functions_of_the_main_steps "${1}" "${3}" "${2}" "${4}";
+    call_functions_of_the_main_steps "$1" "$3" "$2" "$4";
   fi
 }
 
@@ -61,18 +61,18 @@ call_main_step_functions_if_has_running_resources_in_current_region() {
 #   ec2_asg_properties
 ###############################################################################
 get_ec2_auto_scaling_group_properties() {
-  echo "-> Getting EC2 auto scaling group properties in ${1}...";
-  ec2_asg_properties=$(aws autoscaling describe-auto-scaling-groups \
-    --region "${1}" \
-    --profile "${AWS_PROFILE}" \
+  printf "%s\n" "-> Getting EC2 auto scaling group properties in ${1}...";
+  ec2_asg_properties="$(aws autoscaling describe-auto-scaling-groups \
+    --region "$1" \
+    --profile "$AWS_PROFILE" \
     --output "json" \
     --query 'AutoScalingGroups[?DesiredCapacity>=`1`]
-    .{id:AutoScalingGroupName,min:MinSize,max:MaxSize,now:DesiredCapacity}');
+    .{id:AutoScalingGroupName,min:MinSize,max:MaxSize,now:DesiredCapacity}')";
 
-  exit_if_aws_region_was_not_found "$(echo $?)";
+  exit_if_aws_region_was_not_found $(echo $?);
 
-  ec2_asg_properties=$(echo "${ec2_asg_properties}" | \
-    jq -r "${EC2_ASG_PROPERTIES_JQ_QUERY}");
+  ec2_asg_properties="$(echo "$ec2_asg_properties" | \
+    jq -r "$EC2_ASG_PROPERTIES_JQ_QUERY")";
 }
 
 ###############################################################################
@@ -85,19 +85,19 @@ get_ec2_auto_scaling_group_properties() {
 #   ec2_volume_properties
 ###############################################################################
 get_ec2_volume_properties() {
-  echo "-> Getting EC2 volumes properties in ${1}...";
-  ec2_volume_properties=$(aws ec2 describe-volumes \
-    --region "${1}" \
-    --profile "${AWS_PROFILE}" \
+  printf "%s\n" "-> Getting EC2 volumes properties in ${1}...";
+  ec2_volume_properties="$(aws ec2 describe-volumes \
+    --region "$1" \
+    --profile "$AWS_PROFILE" \
     --output "json" \
     --filters 'Name=create-time,Values='${CURRENT_DATE}'T*' \
     --query 'Volumes[?State!=`deleted`]
-    .{id:VolumeId,type:VolumeType,size:Size}');
+    .{id:VolumeId,type:VolumeType,size:Size}')";
 
-  exit_if_aws_region_was_not_found "$(echo $?)";
+  exit_if_aws_region_was_not_found $(echo $?);
 
-  ec2_volume_properties=$(echo "${ec2_volume_properties}" | \
-    jq -r "${EC2_VOLUME_PROPERTIES_JQ_QUERY}");
+  ec2_volume_properties="$(echo "$ec2_volume_properties" | \
+    jq -r "$EC2_VOLUME_PROPERTIES_JQ_QUERY")";
 }
 
 ###############################################################################
@@ -110,20 +110,20 @@ get_ec2_volume_properties() {
 #   ec2_instance_properties
 ###############################################################################
 get_ec2_instance_properties() {
-  echo "-> Getting EC2 instance properties in ${1}...";
-  ec2_instance_properties=$(aws ec2 describe-instances \
-    --region "${1}" \
-    --profile "${AWS_PROFILE}" \
+  printf "%s\n" "-> Getting EC2 instance properties in ${1}...";
+  ec2_instance_properties="$(aws ec2 describe-instances \
+    --region "$1" \
+    --profile "$AWS_PROFILE" \
     --output "json" \
     --filters 'Name=instance-state-name,Values=running' \
       'Name=launch-time,Values='${CURRENT_DATE}'T*' \
     --query 'Reservations[?!contains(keys(@),`RequesterId`)].Instances[*]
-    .{id:InstanceId,time:LaunchTime,type:InstanceType}');
+    .{id:InstanceId,time:LaunchTime,type:InstanceType}')";
 
-  exit_if_aws_region_was_not_found "$(echo $?)"; 
+  exit_if_aws_region_was_not_found $(echo $?); 
 
-  ec2_instance_properties=$(echo "${ec2_instance_properties}" | \
-    jq -r "${EC2_INSTANCE_PROPERTIES_JQ_QUERY}");
+  ec2_instance_properties="$(echo "$ec2_instance_properties" | \
+    jq -r "$EC2_INSTANCE_PROPERTIES_JQ_QUERY")";
 }
 
 ###############################################################################
@@ -137,12 +137,12 @@ get_ec2_instance_properties() {
 #   WEB_HOOK_BLOCK_MAX_LENGTH
 ###############################################################################
 insert_ec2_properties_in_message_body() {
-  echo "-> Inserting EC2 response in the message body...";
+  printf "%s\n" "-> Inserting EC2 response in the message body...";
 
   message_body=$(echo "${message_body}" | \
     sed "s/<region>/${1}/g ; s/<type>/${2}/ ; s/<data>/${3}/ ; s/<#>/${4}/");
 
-  if [[ "${#message_body}" -ge "${WEB_HOOK_BLOCK_MAX_LENGTH}" ]]; then
+  if [[ "${#message_body}" -ge "$WEB_HOOK_BLOCK_MAX_LENGTH" ]]; then
     alert "-> Too many resources for Webhook Block max length!";
   fi
 }
@@ -152,13 +152,13 @@ insert_ec2_properties_in_message_body() {
 #   message_body
 ###############################################################################
 send_message_to_channel() {
-  echo "-> Sending message...";
+  printf "%s\n" "-> Sending message...";
   local response_status=$(curl --silent \
     -H 'Content-type: application/json' \
     --data "${message_body}" \
     ''${WEB_HOOK_URL}'');
 
-  echo -e "-> Response status: ${response_status}\n";
+  printf "%s\n\n" "-> Response status: ${response_status}";
 }
 
 ###############################################################################
@@ -168,24 +168,24 @@ send_message_to_channel() {
 #   ARGUMENTS
 ###############################################################################
 send_ec2_properties_to_channel_for_each_region_specified() {
-  if [[ "${1}" == "--regions" ]]; then
-    for region in $ARGUMENTS; do
-      get_ec2_auto_scaling_group_properties "${region}";
+  if [[ "$1" == "--regions" ]]; then
+    for region in ${ARGUMENTS[@]}; do
+      get_ec2_auto_scaling_group_properties "$region";
       call_main_step_functions_if_has_running_resources_in_current_region \
-      "${region}" "${ec2_asg_properties}" "auto scaling groups" \
+      "$region" "$ec2_asg_properties" "auto scaling groups" \
       "#AutoScalingGroups:";
 
       get_ec2_volume_properties "$region";
       call_main_step_functions_if_has_running_resources_in_current_region \
-      "${region}" "${ec2_volume_properties}" "volumes" "#Volumes:";
+      "$region" "$ec2_volume_properties" "volumes" "#Volumes:";
 
       get_ec2_instance_properties "$region";
       call_main_step_functions_if_has_running_resources_in_current_region \
-      "${region}" "${ec2_instance_properties}" "instances" \
+      "$region" "$ec2_instance_properties" "instances" \
       "#Instances:instanceState=running;sort=tag:Name";
     done
   else
-    alert "-> You must specify one or more regions, for example:\n-> \
+    alert "-> You must specify one or more regions, for example:
     \"./slack_fish_cloud.sh --regions us-east-1 us-east-2\"";
   fi
 }
@@ -195,7 +195,7 @@ send_ec2_properties_to_channel_for_each_region_specified() {
 #   message_body
 ###############################################################################
 refresh_message_body_template() {
-  message_body=$(cat "${EXECUTION_PATH}/templates/aws_ec2_basic.json" | jq);
+  message_body="$(cat "${EXECUTION_PATH}/templates/aws_ec2_basic.json" | jq)";
 }
 
 ###############################################################################
@@ -206,10 +206,10 @@ refresh_message_body_template() {
 ###############################################################################
 call_functions_of_the_main_steps() {
   refresh_message_body_template;
-  insert_ec2_properties_in_message_body "${1}" "${2}" "${3}" "${4}";
+  insert_ec2_properties_in_message_body "$1" "$2" "$3" "$4";
   send_message_to_channel;
 }
 
 checks_for_required_constants;
 show_banner;
-send_ec2_properties_to_channel_for_each_region_specified ${1};
+send_ec2_properties_to_channel_for_each_region_specified $1;
