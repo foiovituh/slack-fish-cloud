@@ -31,7 +31,7 @@ checks_for_required_constants() {
 #  AWS_REGION_NOT_FOUND_STATUS_CODE
 ###############################################################################
 exit_if_aws_region_was_not_found() {
-  if [[ "$1" -eq "$AWS_REGION_NOT_FOUND_STATUS_CODE" ]]; then
+  if [[ $1 -eq $AWS_REGION_NOT_FOUND_STATUS_CODE ]]; then
     exit;
   fi
 }
@@ -71,8 +71,8 @@ get_ec2_auto_scaling_group_properties() {
 
   exit_if_aws_region_was_not_found $(echo $?);
 
-  ec2_asg_properties="$(echo "$ec2_asg_properties" | \
-    jq -r "$EC2_ASG_PROPERTIES_JQ_QUERY")";
+  ec2_asg_properties="$(jq -r "$EC2_ASG_PROPERTIES_JQ_QUERY" \
+  <<< "$ec2_asg_properties")";
 }
 
 ###############################################################################
@@ -96,8 +96,8 @@ get_ec2_volume_properties() {
 
   exit_if_aws_region_was_not_found $(echo $?);
 
-  ec2_volume_properties="$(echo "$ec2_volume_properties" | \
-    jq -r "$EC2_VOLUME_PROPERTIES_JQ_QUERY")";
+  ec2_volume_properties="$(jq -r "$EC2_VOLUME_PROPERTIES_JQ_QUERY" \
+    <<< "$ec2_volume_properties")";
 }
 
 ###############################################################################
@@ -122,8 +122,8 @@ get_ec2_instance_properties() {
 
   exit_if_aws_region_was_not_found $(echo $?); 
 
-  ec2_instance_properties="$(echo "$ec2_instance_properties" | \
-    jq -r "$EC2_INSTANCE_PROPERTIES_JQ_QUERY")";
+  ec2_instance_properties="$(jq -r "$EC2_INSTANCE_PROPERTIES_JQ_QUERY" \
+  <<< "$ec2_instance_properties")";
 }
 
 ###############################################################################
@@ -139,10 +139,10 @@ get_ec2_instance_properties() {
 insert_ec2_properties_in_message_body() {
   printf "%s\n" "-> Inserting EC2 response in the message body...";
 
-  message_body=$(echo "${message_body}" | \
-    sed "s/<region>/${1}/g ; s/<type>/${2}/ ; s/<data>/${3}/ ; s/<#>/${4}/");
+  message_body="$(sed "s/<region>/${1}/g ; s/<type>/${2}/ ; s/<data>/${3}/ ; \
+  s/<#>/${4}/" <<< "${message_body}")";
 
-  if [[ "${#message_body}" -ge "$WEB_HOOK_BLOCK_MAX_LENGTH" ]]; then
+  if [[ ${#message_body} -ge $WEB_HOOK_BLOCK_MAX_LENGTH ]]; then
     alert "-> Too many resources for Webhook Block max length!";
   fi
 }
@@ -153,10 +153,10 @@ insert_ec2_properties_in_message_body() {
 ###############################################################################
 send_message_to_channel() {
   printf "%s\n" "-> Sending message...";
-  local response_status=$(curl --silent \
+  local response_status="$(curl --silent \
     -H 'Content-type: application/json' \
     --data "${message_body}" \
-    ''${WEB_HOOK_URL}'');
+    ''${WEB_HOOK_URL}'')";
 
   printf "%s\n\n" "-> Response status: ${response_status}";
 }
@@ -195,7 +195,7 @@ send_ec2_properties_to_channel_for_each_region_specified() {
 #   message_body
 ###############################################################################
 refresh_message_body_template() {
-  message_body="$(cat "${EXECUTION_PATH}/templates/aws_ec2_basic.json" | jq)";
+  message_body="$(jq < "${EXECUTION_PATH}/templates/aws_ec2_basic.json")";
 }
 
 ###############################################################################
