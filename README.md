@@ -30,8 +30,7 @@ You can also pass other regions separated by spaces:
 
 Example in Slack:
 
-![example_aws_ec2_instances_and_asgs_slack](https://user-images.githubusercontent.com/68431603/217516776-37da8d49-14c7-4398-aa41-d7c665d8f685.png)
-![example_aws_ec2_volumes_slack](https://user-images.githubusercontent.com/68431603/218195248-b26899d1-cd2c-4471-a9b5-d972ae6f7b6a.png)
+![example_aws_ec2_resources](https://user-images.githubusercontent.com/68431603/219953511-2d757f59-232d-4378-afb9-800793241261.jpg)
 
 <b>NOTE:</b> only instances and volumes created on the same day of the script execution will be considered
 
