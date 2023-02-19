@@ -1,7 +1,7 @@
 # SlackFishCloud 🐠
 Never forget to delete your AWS daily tests. SlackFishCloud sends messages to Slack channels alerting you to running AWS resources.
 
-## Dependencies 🔗
+## Requirements 🔗
 <b>OS</b>:
 - GNU/Linux or WSL
 
