@@ -7,6 +7,7 @@ Never forget to delete your AWS daily tests. SlackFishCloud sends messages to Sl
 
 <b>Will be installed via `install.sh` if necessary:</b>
 - jq
+- curl
 - figlet
 - AWS CLI v.2+ (<b>requires configuration</b>)
 
