@@ -18,7 +18,7 @@ Never forget to delete your AWS daily tests. SlackFishCloud sends messages to Sl
 For more information about Slack Webhooks, see <a href="https://api.slack.com/messaging/webhooks" target="_blank">Sending messages using Incoming Webhooks</a>
 
 ## Quick usage guide 📚
-Get EC2 running resources (ASGs, volumes and instances) in `us-east-1`:
+Get EC2 running resources (ASGs, instances, snapshots and volumes) in `us-east-1`:
 ```bash
 ./sfc.sh --regions us-east-1
 ```
@@ -28,18 +28,21 @@ You can also pass other regions separated by spaces:
 ./sfc.sh --regions us-east-1 us-east-2 af-south-1 eu-west-3
 ```
 
-Example in Slack:
+Examples in Slack:
 
-![example_aws_ec2_resources](https://user-images.githubusercontent.com/68431603/219953511-2d757f59-232d-4378-afb9-800793241261.jpg)
+![example_aws_ec2_asg_resources](https://user-images.githubusercontent.com/68431603/220462527-a7312139-2f48-4890-873c-f47da05fa834.jpg)
+![example_aws_ec2_instance_resources](https://user-images.githubusercontent.com/68431603/220462534-136893ba-09cf-4f5b-b0ed-4a09666b3536.jpg)
+![example_aws_ec2_snapshot_resources](https://user-images.githubusercontent.com/68431603/220462536-c87fbe30-262d-4660-9253-0405f3c96395.jpg)
+![example_aws_ec2_volume_resources](https://user-images.githubusercontent.com/68431603/220462537-1f2094e7-cfb2-424a-a978-cf28ff604054.jpg)
 
-<b>NOTE:</b> only instances and volumes created on the same day of the script execution will be considered
+<b>NOTE:</b> only instances volumes and snapshots created on the same day of the script execution will be considered
 
 ## Open plans 📌
 - New filters
 - Set up schedulers with crontab
 - Project more EC2 attributes in messages
 - Implement a multi-cloud version (Azure + GCP)
-- Add support in other AWS services/resources, e.g. Snapshots and S3 buckets
+- Add support in other AWS services/resources, e.g.S3 buckets and Lambda
 
 ## Do you want help me? 👥
 If you have any ideas or wish to contribute to the project, contact me on Twitter @vituohto or send me a pull request! :)

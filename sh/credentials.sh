@@ -1,3 +1,4 @@
 #!/bin/bash
-AWS_PROFILE="";
-WEB_HOOK_URL="";
+AWS_PROFILE='';
+WEB_HOOK_URL='';
+
