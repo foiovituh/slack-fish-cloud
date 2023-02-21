@@ -14,7 +14,7 @@ for dependencie in ${DEPENDENCIES[@]}; do
         unzip "${EXECUTION_PATH}/awscliv2.zip";
         sudo './aws/install';
         sudo rm -rf "${EXECUTION_PATH}/awscliv2.zip" './aws';
-        printf '\n%s\n' "-> For more information about CLI, see:";
+        printf '\n%s\n' '-> For more information about CLI, see:';
         printf '%s\n' "$(cat "${EXECUTION_PATH}/links/aws_cli_setup.txt")";
 
         continue;

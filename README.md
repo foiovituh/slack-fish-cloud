@@ -42,7 +42,7 @@ Examples in Slack:
 - Set up schedulers with crontab
 - Project more EC2 attributes in messages
 - Implement a multi-cloud version (Azure + GCP)
-- Add support in other AWS services/resources, e.g.S3 buckets and Lambda
+- Add support in other AWS services/resources, e.g. S3 buckets and Lambda functions
 
 ## Do you want help me? 👥
 If you have any ideas or wish to contribute to the project, contact me on Twitter @vituohto or send me a pull request! :)
