@@ -59,6 +59,26 @@ call_main_step_functions_if_has_running_resources_in_current_region() {
 #   AWS_PROFILE
 #   CURRENT_DATE
 #   AWS_REGION_NOT_FOUND_STATUS_CODE
+#   eks_clusters_properties
+###############################################################################
+get_eks_clusters_properties() {
+  printf '%s\n' "-> Getting EKS list-clusters in ${1}...";
+  eks_clusters_properties="$(aws eks list-clusters \
+    --region "$1" \
+    --profile "$AWS_PROFILE" \
+    --output 'json' \
+    --query 'clusters[]')";
+
+  exit_if_aws_region_was_not_found $(echo $?);
+}
+
+###############################################################################
+# Arguments:
+#   region
+# Globals:
+#   AWS_PROFILE
+#   CURRENT_DATE
+#   AWS_REGION_NOT_FOUND_STATUS_CODE
 #   ec2_asg_properties
 ###############################################################################
 get_ec2_auto_scaling_group_properties() {
@@ -192,6 +212,26 @@ send_message_to_channel() {
 # Globals:
 #   ARGUMENTS
 ###############################################################################
+send_eks_properties_to_channel_for_each_region_specified() {
+  if [[ "$1" == '--regions' ]]; then
+    for region in ${ARGUMENTS[@]}; do
+      get_eks_clusters_properties "$region";
+      call_main_step_functions_if_has_running_resources_in_current_region \
+      "$region" "$eks_clusters_properties" 'eks' \
+      '#EKS:';
+    done
+  else
+    alert '-> You must specify one or more regions, for example:
+    "./slack_fish_cloud.sh --regions us-east-1 us-east-2"';
+  fi
+}
+
+###############################################################################
+# Arguments:
+#   the first user argument
+# Globals:
+#   ARGUMENTS
+###############################################################################
 send_ec2_properties_to_channel_for_each_region_specified() {
   if [[ "$1" == '--regions' ]]; then
     for region in ${ARGUMENTS[@]}; do
@@ -242,3 +282,4 @@ call_functions_of_the_main_steps() {
 checks_for_required_constants;
 show_banner;
 send_ec2_properties_to_channel_for_each_region_specified $1;
+send_eks_properties_to_channel_for_each_region_specified $1;
